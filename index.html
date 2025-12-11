@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>beneath-the-stars</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Quicksand:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        margin: 0;
+        overflow: hidden;
+        background: black;
+        font-family: 'Quicksand', sans-serif;
+        color: white;
+        text-align: center;
+    }
+    #countdown {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 120px;
+        font-family: 'Quicksand', sans-serif;
+        opacity: 0;
+        transition: 0.5s;
+    }
+    #title {
+        position: absolute;
+        top: 42%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 60px;
+        font-family: 'Allura', cursive;
+        color: #ffb4d7;
+        opacity: 0;
+        transition: 0.8s;
+    }
+    #subtitle {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 12px;
+        opacity: 0;
+        font-family: 'Quicksand', sans-serif;
+        transition: opacity 0.8s ease 0.3s;
+    }
+    #openBtn {
+        position: absolute;
+        top: 54%;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 32px;
+        border-radius: 25px;
+        border: none;
+        background: linear-gradient(135deg, hotpink, #ff69b4);
+        color: white;
+        font-size: 16px;
+        font-weight: 400;
+        cursor: pointer;
+        opacity: 0;
+        transition: 0.6s;
+        box-shadow: 0 5px 20px rgba(255,105,180,0.4);
+    }
+    #openBtn:hover {
+        transform: translateX(-50%) scale(1.05);
+        box-shadow: 0 7px 25px rgba(255,105,180,0.6);
+    }
+    #letterBox {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        max-width: 700px;
+        background: rgba(255,255,255,0.09);
+        padding: 35px;
+        border-radius: 18px;
+        box-shadow: 0 0 25px rgba(255,105,180,0.3);
+        backdrop-filter: blur(7px);
+        opacity: 0;
+        transition: 0.8s;
+        pointer-events: none;
+    }
+    #letterBox.active {
+        pointer-events: auto;
+    }
+    #letterText {
+        font-family: 'Special Elite', cursive;
+        font-size: 16px;
+        line-height: 1.6;
+        white-space: pre-line;
+    }
+    #particleCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+    }
+
+    #finalMessage {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        font-family: 'Allura', cursive;
+        color: #ffb4d7;
+        opacity: 0;
+        transition: 1.2s;
+    }
+    #nickGif {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150px;
+        opacity: 0;
+        transition: 1.2s;
+    }
+    #credit {
+        position: absolute;
+        bottom: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 10px;
+        font-family: 'Special Elite', cursive;
+        color: #ff92b8;
+        opacity: 0;
+        transition: 1.2s;
+    }
+    .heart {
+        position: fixed;
+        top: -10px;
+        color: pink;
+        font-size: 18px;
+        animation: fall 5s linear infinite;
+        opacity: 0.8;
+    }
+    @keyframes fall {
+        to { transform: translateY(110vh); opacity: 0; }
+    }
+
+    .star {
+        position: absolute;
+        width: 2px;
+        height: 2px;
+        background: white;
+        opacity: 0.8;
+        border-radius: 50%;
+        animation: twinkle 2s infinite ease-in-out;
+    }
+    @keyframes twinkle {
+        0%,100% { opacity: 0.1; }
+        50% { opacity: 1; }
+    }
+    .snow {
+        position: fixed;
+        top: -10px;
+        width: 5px;
+        height: 5px;
+        background: white;
+        border-radius: 50%;
+        opacity: 0.9;
+        animation: snowFall 6s linear infinite;
+    }
+    @keyframes snowFall {
+        to { transform: translateY(110vh); }
+    }
+
+</style>
+</head>
+<body>
+
+<audio id="bgm" src="misletoe.mp3"></audio>
+
+<canvas id="particleCanvas"></canvas>
+
+<div id="countdown"></div>
+<div id="title">Hey, Alfredo Bintang Sukma! 🦊</div>
+<div id="subtitle">a small piece of kindness is waiting to be opened.</div>
+
+<button id="openBtn">Let's start!!</button>
+
+<div id="letterBox">
+    <div id="letterText"></div>
+</div>
+
+<div id="finalMessage">Merry Christmas, Dede 🧸🎄❤️</div>
+<img id="nickGif" src="nick.gif" alt="Nick">
+
+<div id="credit">Sincerely, Aldarable</div>
+
+
+<script>
+
+/* Particle Canvas Setup */
+const particleCanvas = document.getElementById('particleCanvas');
+const pCtx = particleCanvas.getContext('2d');
+particleCanvas.width = window.innerWidth;
+particleCanvas.height = window.innerHeight;
+
+class Particle {
+    constructor(x, y, targetX, targetY, color = '#fff') {
+        this.x = Math.random() * particleCanvas.width;
+        this.y = Math.random() * particleCanvas.height;
+        this.targetX = targetX;
+        this.targetY = targetY;
+        this.color = color;
+        this.size = Math.random() * 3 + 2;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.arrived = false;
+    }
+    update() {
+        if (!this.arrived) {
+            const dx = this.targetX - this.x;
+            const dy = this.targetY - this.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance < 2) {
+                this.arrived = true;
+                this.x = this.targetX;
+                this.y = this.targetY;
+            } else {
+                this.speedX = dx * 0.08;
+                this.speedY = dy * 0.08;
+                this.x += this.speedX;
+                this.y += this.speedY;
+            }
+        }
+    }
+    draw() {
+        pCtx.fillStyle = this.color;
+        pCtx.beginPath();
+        pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        pCtx.fill();
+    }
+}
+
+let particles = [];
+let animationFrame;
+
+function animateParticles() {
+    pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+    animationFrame = requestAnimationFrame(animateParticles);
+}
+
+function createHeartParticles() {
+    particles = [];
+    pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    const centerX = particleCanvas.width / 2;
+    const centerY = particleCanvas.height / 2;
+    const scale = 8;
+    for (let t = 0; t < Math.PI * 2; t += 0.05) {
+        const x = 16 * Math.pow(Math.sin(t), 3);
+        const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+        const px = centerX + x * scale;
+        const py = centerY + y * scale;
+        particles.push(new Particle(0, 0, px, py, '#ff69b4'));
+    }
+    animateParticles();
+}
+
+function scatterParticles() {
+    particles.forEach(p => {
+        p.targetX = Math.random() * particleCanvas.width;
+        p.targetY = Math.random() * particleCanvas.height;
+        p.arrived = false;
+    });
+}
+
+function clearParticles() {
+    cancelAnimationFrame(animationFrame);
+    particles = [];
+    pCtx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+}
+
+/* random hearts */
+setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💗";
+    h.style.left = Math.random()*100 + "vw";
+    h.style.fontSize = 12 + Math.random()*18 + "px";
+    h.style.animationDuration = 3 + Math.random()*4 + "s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(), 7000);
+}, 300);
+
+/* stars */
+for (let i = 0; i < 150; i++) {
+    const s = document.createElement("div");
+    s.className = "star";
+    s.style.top = Math.random()*100 + "vh";
+    s.style.left = Math.random()*100 + "vw";
+    document.body.appendChild(s);
+}
+
+/* snowflakes */
+setInterval(()=> {
+    const sn = document.createElement("div");
+    sn.className = "snow";
+    sn.style.left = Math.random()*100 + "vw";
+    sn.style.animationDuration = 4 + Math.random()*3 + "s";
+    document.body.appendChild(sn);
+    setTimeout(()=>sn.remove(), 7000);
+}, 250);
+
+/* countdown */
+let c = 3;
+const cd = document.getElementById("countdown");
+
+cd.style.opacity = 1;
+cd.innerHTML = c;
+
+let interval = setInterval(()=>{
+    c--;
+    if(c===0){
+        cd.innerHTML = "1";
+    } else {
+        cd.innerHTML = c;
+    }
+    if(c < 1){
+        clearInterval(interval);
+        cd.style.opacity = 0;
+        setTimeout(()=>{
+            title.style.opacity = 1;
+            subtitle.style.opacity = 1;
+            openBtn.style.opacity = 1;
+        },600);
+    }
+},1000);
+
+/* open letter */
+const openBtn = document.getElementById("openBtn");
+const letterBox = document.getElementById("letterBox");
+const letterText = document.getElementById("letterText");
+const bgm = document.getElementById("bgm");
+
+openBtn.onclick = () => {
+    bgm.play().catch(()=>{});  
+    openBtn.style.opacity = 0;
+    title.style.opacity = 0;
+    subtitle.style.opacity = 0;
+    setTimeout(()=>{
+        letterBox.classList.add('active');
+        letterBox.style.opacity = 1;
+        typeLetter();
+    },700);
+};
+
+/* typing effect */
+const message = `You're the kind of unexpected I needed, Bintang.
+
+"You are precious and honored in my sight, and I love you." 
+-- Isaiah 43:4 🕊️
+
+Thank you for making my days lighter without trying, 
+for being warm in your quiet way, and for turning 
+simple moments into something I want to keep.
+
+"The Lord bless you and keep you; 
+the Lord make his face shine on you and be gracious to you; 
+the Lord turn his face toward you and give you peace." 
+-- Numbers 6:24-26 🕊️
+
+Merry Christmas and Happy New Year. 
+I wish you all good things.
+‧₊˚🎄✩ ₊˚🦌⊹♡
+
+(And yes, I miss you)`;
+
+let i = 0;
+function typeLetter(){
+    if(i < message.length){
+        letterText.innerHTML += message.charAt(i);
+        i++;
+        setTimeout(typeLetter, 40);
+    } else {
+        setTimeout(()=>{
+            letterBox.style.opacity = 0;
+
+            setTimeout(()=>{
+                createHeartParticles();
+                
+                setTimeout(()=>{
+                    scatterParticles();
+                    
+                    setTimeout(()=>{
+                        clearParticles();
+                        finalMessage.style.opacity = 1;
+                        nickGif.style.opacity = 1;
+
+                        setTimeout(()=>{
+                            credit.style.opacity = 1;
+                        }, 900);
+                    }, 2500);
+                }, 2500);
+
+            }, 900);
+
+        }, 1200);
+    }
+}
+
+</script>
+</body>
+</html>
