@@ -36,6 +36,8 @@
         color: #ffb4d7;
         opacity: 0;
         transition: 0.8s;
+        padding: 0 20px;
+        text-align: center;
     }
     #subtitle {
         position: absolute;
@@ -46,12 +48,14 @@
         opacity: 0;
         font-family: 'Quicksand', sans-serif;
         transition: opacity 0.8s ease 0.3s;
+        padding: 0 20px;
+        text-align: center;
     }
     #openBtn {
         position: absolute;
         top: 54%;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translate(-50%, 0);
         padding: 12px 32px;
         border-radius: 25px;
         border: none;
@@ -61,12 +65,15 @@
         font-weight: 400;
         cursor: pointer;
         opacity: 0;
-        transition: 0.6s;
+        transition: all 0.3s ease;
         box-shadow: 0 5px 20px rgba(255,105,180,0.4);
     }
     #openBtn:hover {
-        transform: translateX(-50%) scale(1.05);
+        transform: translate(-50%, 0) scale(1.05);
         box-shadow: 0 7px 25px rgba(255,105,180,0.6);
+    }
+    #openBtn:active {
+        transform: translate(-50%, 0) scale(0.98);
     }
     #letterBox {
         position: absolute;
@@ -76,13 +83,15 @@
         width: 50%;
         max-width: 700px;
         background: rgba(255,255,255,0.09);
-        padding: 35px;
+        padding: 25px;
         border-radius: 18px;
         box-shadow: 0 0 25px rgba(255,105,180,0.3);
         backdrop-filter: blur(7px);
         opacity: 0;
         transition: 0.8s;
         pointer-events: none;
+        max-height: 80vh;
+        overflow-y: auto;
     }
     #letterBox.active {
         pointer-events: auto;
@@ -102,7 +111,6 @@
         pointer-events: none;
         z-index: 10;
     }
-
     #finalMessage {
         position: absolute;
         top: 50%;
@@ -173,6 +181,73 @@
         to { transform: translateY(110vh); }
     }
 
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        #countdown {
+            font-size: 80px;
+        }
+        #title {
+            font-size: 36px;
+            top: 40%;
+        }
+        #subtitle {
+            font-size: 11px;
+            top: 48%;
+        }
+        #openBtn {
+            top: 54%;
+            font-size: 15px;
+            padding: 11px 28px;
+        }
+        #letterBox {
+            padding: 20px;
+            width: 85%;
+        }
+        #letterText {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        #finalMessage {
+            font-size: 32px;
+            padding: 0 20px;
+        }
+        #nickGif {
+            width: 120px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #countdown {
+            font-size: 60px;
+        }
+        #title {
+            font-size: 28px;
+            top: 38%;
+        }
+        #subtitle {
+            font-size: 10px;
+            top: 47%;
+        }
+        #openBtn {
+            top: 52%;
+            font-size: 14px;
+            padding: 10px 24px;
+        }
+        #letterBox {
+            padding: 18px;
+        }
+        #letterText {
+            font-size: 13px;
+        }
+        #finalMessage {
+            font-size: 26px;
+        }
+        #nickGif {
+            width: 100px;
+            top: 58%;
+        }
+    }
+    
 </style>
 </head>
 <body>
@@ -185,7 +260,7 @@
 <div id="title">Hey, Alfredo Bintang Sukma! 🦊</div>
 <div id="subtitle">a small piece of kindness is waiting to be opened.</div>
 
-<button id="openBtn">Let's start!!</button>
+<button id="openBtn">Unwrap This</button>
 
 <div id="letterBox">
     <div id="letterText"></div>
@@ -359,14 +434,15 @@ openBtn.onclick = () => {
 };
 
 /* typing effect */
-const message = `You're the kind of unexpected I needed, Bintang.
+const message = `You're the kind of unexpected this year, Bintang.
 
 "You are precious and honored in my sight, and I love you." 
 -- Isaiah 43:4 🕊️
 
-Thank you for making my days lighter without trying, 
-for being warm in your quiet way, and for turning 
-simple moments into something I want to keep.
+Thank you for making my days feel lighter without even trying,
+for the quiet warmth you carry, and for moments that linger
+longer than they should. And well… 
+thank you for being warm, funny, and unintentionally cute.
 
 "The Lord bless you and keep you; 
 the Lord make his face shine on you and be gracious to you; 
