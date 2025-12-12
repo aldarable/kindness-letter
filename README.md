@@ -1,7 +1,7 @@
 # 💌 Kindness Letter
 
 A heartfelt Christmas letter wrapped in stars, snowflakes, and gentle animations. <div>
--—created for someone special.
+-—created for Bintang🦊.
 
 ## ✨ About
 
@@ -24,7 +24,7 @@ This is a personalized interactive web experience designed to deliver warm wishe
 
 ## 🚀 Live Demo
 
-View the live site: [Your Netlify/GitHub Pages Link Here]
+View the live site: [Link](https://aldarable.github.io/kindness-letter/)
 
 ## 📁 Project Structure
 
